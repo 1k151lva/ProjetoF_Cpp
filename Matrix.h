@@ -17,7 +17,7 @@ public:
     Matrix(size_t numRows, size_t numCols, const T& initialValue = T())
         : rows(numRows), cols(numCols) {
         if (numRows == 0 || numCols == 0) {
-            throw std::invalid_argument("Matrix dimensions must be positive.");
+            throw std::invalid_argument("As dimensões da matriz devem ser positivas.");
         }
         data.resize(rows);
         for (size_t i = 0; i < rows; ++i) {
@@ -42,14 +42,14 @@ public:
     
         cols = list.begin()->size();
         if (cols == 0) {
-            throw std::invalid_argument("Initializer list rows cannot be empty.");
+            throw std::invalid_argument("As linhas da lista de inicializadores não podem estar vazias.");
         }
 
         data.resize(rows);
         size_t r = 0;
         for (const auto& row_list : list) {
             if (row_list.size() != cols) {
-                throw std::invalid_argument("Initializer list rows must have consistent column counts.");
+                throw std::invalid_argument("As linhas da lista de inicializadores devem ter contagens de colunas consistentes.");
             }
             data[r].assign(row_list.begin(), row_list.end());
             r++;
@@ -65,14 +65,14 @@ public:
 
     T& operator()(size_t r, size_t c) {
         if (r >= rows || c >= cols) {
-            throw std::out_of_range("Matrix element access out of bounds.");
+            throw std::out_of_range("Acesso ao elemento da matriz fora dos limites.");
         }
         return data[r][c];
     }
 
     const T& operator()(size_t r, size_t c) const {
         if (r >= rows || c >= cols) {
-            throw std::out_of_range("Matrix element access out of bounds.");
+            throw std::out_of_range("Acesso ao elemento da matriz fora dos limites.");
         }
         return data[r][c];
     }
@@ -80,7 +80,7 @@ public:
     // Soma de matrizes
     Matrix<T> operator+(const Matrix<T>& other) const {
         if (rows != other.rows || cols != other.cols) {
-            throw std::invalid_argument("Matrix dimensions must match for addition.");
+            throw std::invalid_argument("As dimensões da matriz devem corresponder para adição.");
         }
         Matrix<T> result(rows, cols);
         for (size_t i = 0; i < rows; ++i) {
@@ -94,7 +94,7 @@ public:
     // Subtração de matrizes
     Matrix<T> operator-(const Matrix<T>& other) const {
         if (rows != other.rows || cols != other.cols) {
-            throw std::invalid_argument("Matrix dimensions must match for subtraction.");
+            throw std::invalid_argument("As dimensões da matriz devem corresponder para subtração.");
         }
         Matrix<T> result(rows, cols);
         for (size_t i = 0; i < rows; ++i) {
@@ -108,7 +108,7 @@ public:
     // Multiplicação de matrizes
     Matrix<T> operator*(const Matrix<T>& other) const {
         if (cols != other.rows) {
-            throw std::invalid_argument("Number of columns of first matrix must equal number of rows of second matrix for multiplication.");
+            throw std::invalid_argument("O número de colunas da primeira matriz deve ser igual ao número de linhas da segunda matriz para multiplicação.");
         }
         Matrix<T> result(rows, other.cols);
         for (size_t i = 0; i < rows; ++i) {
@@ -174,7 +174,7 @@ public:
 
     Matrix<T> operator/(const T& scalar) const {
         if (scalar == T()) { 
-            throw std::invalid_argument("Division by zero scalar.");
+            throw std::invalid_argument("Divisão por escalar zero.");
         }
         Matrix<T> result(rows, cols);
         for (size_t i = 0; i < rows; ++i) {
