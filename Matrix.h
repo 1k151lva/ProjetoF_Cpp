@@ -5,247 +5,244 @@
 #include <initializer_list>
 #include <stdexcept>
 
-// Classe template Matrix: representa uma matriz genérica de tipo T
+// Classe template Matriz: representa uma matriz genérica de tipo T
 template <typename T>
-class Matrix {
+class Matriz {
 private:
-    std::vector<std::vector<T>> data; // Armazena os dados da matriz
-    size_t rows; // Número de linhas
-    size_t cols; // Número de colunas
+    std::vector<std::vector<T>> dados; // Armazena os dados da matriz
+    size_t linhas; // Número de linhas
+    size_t colunas; // Número de colunas
 
 public:
-    Matrix(size_t numRows, size_t numCols, const T& initialValue = T())
-        : rows(numRows), cols(numCols) {
-        if (numRows == 0 || numCols == 0) {
+    // Construtor padrão com valor inicial
+    Matriz(size_t numLinhas, size_t numColunas, const T& valorInicial = T())
+        : linhas(numLinhas), colunas(numColunas) {
+        if (numLinhas == 0 || numColunas == 0) {
             throw std::invalid_argument("As dimensões da matriz devem ser positivas.");
         }
-        data.resize(rows);
-        for (size_t i = 0; i < rows; ++i) {
-            data[i].resize(cols, initialValue);
+        dados.resize(linhas);
+        for (size_t i = 0; i < linhas; ++i) {
+            dados[i].resize(colunas, valorInicial);
         }
     }
     
     // Construtor de cópia
-    Matrix(const Matrix<T>& other)
-        : rows(other.rows), cols(other.cols), data(other.data) {
-        
-    }
+    Matriz(const Matriz<T>& outra)
+        : linhas(outra.linhas), colunas(outra.colunas), dados(outra.dados) {}
 
     // Construtor com lista de inicialização
-    Matrix(std::initializer_list<std::initializer_list<T>> list) {
-        rows = list.size();
-        if (rows == 0) {
-            cols = 0; 
+    Matriz(std::initializer_list<std::initializer_list<T>> lista) {
+        linhas = lista.size();
+        if (linhas == 0) {
+            colunas = 0; 
             return;
         }
 
-    
-        cols = list.begin()->size();
-        if (cols == 0) {
+        colunas = lista.begin()->size();
+        if (colunas == 0) {
             throw std::invalid_argument("As linhas da lista de inicializadores não podem estar vazias.");
         }
 
-        data.resize(rows);
-        size_t r = 0;
-        for (const auto& row_list : list) {
-            if (row_list.size() != cols) {
-                throw std::invalid_argument("As linhas da lista de inicializadores devem ter contagens de colunas consistentes.");
+        dados.resize(linhas);
+        size_t l = 0;
+        for (const auto& linha_lista : lista) {
+            if (linha_lista.size() != colunas) {
+                throw std::invalid_argument("Todas as linhas devem ter a mesma quantidade de colunas.");
             }
-            data[r].assign(row_list.begin(), row_list.end());
-            r++;
+            dados[l].assign(linha_lista.begin(), linha_lista.end());
+            l++;
         }
     }
 
-    // Retorna o número de linhas da matriz
-    size_t getRows() const { return rows; }
+    // Retorna o número de linhas
+    size_t obterLinhas() const { return linhas; }
 
-    // Retorna o número de colunas da matriz
-    size_t getCols() const { return cols; }
+    // Retorna o número de colunas
+    size_t obterColunas() const { return colunas; }
 
-
-    T& operator()(size_t r, size_t c) {
-        if (r >= rows || c >= cols) {
-            throw std::out_of_range("Acesso ao elemento da matriz fora dos limites.");
+    // Acesso com verificação de limites (modificável)
+    T& operator()(size_t l, size_t c) {
+        if (l >= linhas || c >= colunas) {
+            throw std::out_of_range("Acesso ao elemento fora dos limites.");
         }
-        return data[r][c];
+        return dados[l][c];
     }
 
-    const T& operator()(size_t r, size_t c) const {
-        if (r >= rows || c >= cols) {
-            throw std::out_of_range("Acesso ao elemento da matriz fora dos limites.");
+    // Acesso com verificação de limites (constante)
+    const T& operator()(size_t l, size_t c) const {
+        if (l >= linhas || c >= colunas) {
+            throw std::out_of_range("Acesso ao elemento fora dos limites.");
         }
-        return data[r][c];
+        return dados[l][c];
     }
 
     // Soma de matrizes
-    Matrix<T> operator+(const Matrix<T>& other) const {
-        if (rows != other.rows || cols != other.cols) {
-            throw std::invalid_argument("As dimensões da matriz devem corresponder para adição.");
+    Matriz<T> operator+(const Matriz<T>& outra) const {
+        if (linhas != outra.linhas || colunas != outra.colunas) {
+            throw std::invalid_argument("As dimensões devem ser iguais para somar.");
         }
-        Matrix<T> result(rows, cols);
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < cols; ++j) {
-                result.data[i][j] = data[i][j] + other.data[i][j];
+        Matriz<T> resultado(linhas, colunas);
+        for (size_t i = 0; i < linhas; ++i) {
+            for (size_t j = 0; j < colunas; ++j) {
+                resultado.dados[i][j] = dados[i][j] + outra.dados[i][j];
             }
         }
-        return result;
+        return resultado;
     }
 
     // Subtração de matrizes
-    Matrix<T> operator-(const Matrix<T>& other) const {
-        if (rows != other.rows || cols != other.cols) {
-            throw std::invalid_argument("As dimensões da matriz devem corresponder para subtração.");
+    Matriz<T> operator-(const Matriz<T>& outra) const {
+        if (linhas != outra.linhas || colunas != outra.colunas) {
+            throw std::invalid_argument("As dimensões devem ser iguais para subtrair.");
         }
-        Matrix<T> result(rows, cols);
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < cols; ++j) {
-                result.data[i][j] = data[i][j] - other.data[i][j];
+        Matriz<T> resultado(linhas, colunas);
+        for (size_t i = 0; i < linhas; ++i) {
+            for (size_t j = 0; j < colunas; ++j) {
+                resultado.dados[i][j] = dados[i][j] - outra.dados[i][j];
             }
         }
-        return result;
+        return resultado;
     }
 
     // Multiplicação de matrizes
-    Matrix<T> operator*(const Matrix<T>& other) const {
-        if (cols != other.rows) {
-            throw std::invalid_argument("O número de colunas da primeira matriz deve ser igual ao número de linhas da segunda matriz para multiplicação.");
+    Matriz<T> operator*(const Matriz<T>& outra) const {
+        if (colunas != outra.linhas) {
+            throw std::invalid_argument("O número de colunas da primeira deve ser igual ao número de linhas da segunda.");
         }
-        Matrix<T> result(rows, other.cols);
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < other.cols; ++j) {
-                T sum = T(); 
-                for (size_t k = 0; k < cols; ++k) {
-                    sum += data[i][k] * other.data[k][j];
+        Matriz<T> resultado(linhas, outra.colunas);
+        for (size_t i = 0; i < linhas; ++i) {
+            for (size_t j = 0; j < outra.colunas; ++j) {
+                T soma = T(); 
+                for (size_t k = 0; k < colunas; ++k) {
+                    soma += dados[i][k] * outra.dados[k][j];
                 }
-                result.data[i][j] = sum;
+                resultado.dados[i][j] = soma;
             }
         }
-        return result;
+        return resultado;
     }
 
-    // Soma composta
-    Matrix<T>& operator+=(const Matrix<T>& other) {
-        *this = *this + other; 
+    // Operadores compostos com outra matriz
+    Matriz<T>& operator+=(const Matriz<T>& outra) {
+        *this = *this + outra;
         return *this;
     }
 
-    // Subtração composta
-    Matrix<T>& operator-=(const Matrix<T>& other) {
-        *this = *this - other; 
+    Matriz<T>& operator-=(const Matriz<T>& outra) {
+        *this = *this - outra;
         return *this;
     }
 
-    // Multiplicação composta
-    Matrix<T>& operator*=(const Matrix<T>& other) {
-        *this = *this * other; 
+    Matriz<T>& operator*=(const Matriz<T>& outra) {
+        *this = *this * outra;
         return *this;
     }
 
-      // Operadores com escalar (retornam nova matriz)
-    Matrix<T> operator+(const T& scalar) const {
-        Matrix<T> result(rows, cols);
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < cols; ++j) {
-                result.data[i][j] = data[i][j] + scalar;
+    // Operadores com escalar
+    Matriz<T> operator+(const T& escalar) const {
+        Matriz<T> resultado(linhas, colunas);
+        for (size_t i = 0; i < linhas; ++i) {
+            for (size_t j = 0; j < colunas; ++j) {
+                resultado.dados[i][j] = dados[i][j] + escalar;
             }
         }
-        return result;
+        return resultado;
     }
 
-    Matrix<T> operator-(const T& scalar) const {
-        Matrix<T> result(rows, cols);
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < cols; ++j) {
-                result.data[i][j] = data[i][j] - scalar;
+    Matriz<T> operator-(const T& escalar) const {
+        Matriz<T> resultado(linhas, colunas);
+        for (size_t i = 0; i < linhas; ++i) {
+            for (size_t j = 0; j < colunas; ++j) {
+                resultado.dados[i][j] = dados[i][j] - escalar;
             }
         }
-        return result;
+        return resultado;
     }
 
-    Matrix<T> operator*(const T& scalar) const {
-        Matrix<T> result(rows, cols);
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < cols; ++j) {
-                result.data[i][j] = data[i][j] * scalar;
+    Matriz<T> operator*(const T& escalar) const {
+        Matriz<T> resultado(linhas, colunas);
+        for (size_t i = 0; i < linhas; ++i) {
+            for (size_t j = 0; j < colunas; ++j) {
+                resultado.dados[i][j] = dados[i][j] * escalar;
             }
         }
-        return result;
+        return resultado;
     }
 
-    Matrix<T> operator/(const T& scalar) const {
-        if (scalar == T()) { 
+    Matriz<T> operator/(const T& escalar) const {
+        if (escalar == T()) {
             throw std::invalid_argument("Divisão por escalar zero.");
         }
-        Matrix<T> result(rows, cols);
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < cols; ++j) {
-                result.data[i][j] = data[i][j] / scalar;
+        Matriz<T> resultado(linhas, colunas);
+        for (size_t i = 0; i < linhas; ++i) {
+            for (size_t j = 0; j < colunas; ++j) {
+                resultado.dados[i][j] = dados[i][j] / escalar;
             }
         }
-        return result;
+        return resultado;
     }
 
-   // Operadores compostos com escalar
-    Matrix<T>& operator+=(const T& scalar) {
-        *this = *this + scalar;
+    // Operadores compostos com escalar
+    Matriz<T>& operator+=(const T& escalar) {
+        *this = *this + escalar;
         return *this;
     }
 
-    Matrix<T>& operator-=(const T& scalar) {
-        *this = *this - scalar;
+    Matriz<T>& operator-=(const T& escalar) {
+        *this = *this - escalar;
         return *this;
     }
 
-    Matrix<T>& operator*=(const T& scalar) {
-        *this = *this * scalar;
+    Matriz<T>& operator*=(const T& escalar) {
+        *this = *this * escalar;
         return *this;
     }
 
-    Matrix<T>& operator/=(const T& scalar) {
-        *this = *this / scalar;
+    Matriz<T>& operator/=(const T& escalar) {
+        *this = *this / escalar;
         return *this;
     }
 
     // Retorna a matriz transposta
-    Matrix<T> transpose() const {
-        Matrix<T> result(cols, rows); 
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < cols; ++j) {
-                result.data[j][i] = data[i][j];
+    Matriz<T> transposta() const {
+        Matriz<T> resultado(colunas, linhas);
+        for (size_t i = 0; i < linhas; ++i) {
+            for (size_t j = 0; j < colunas; ++j) {
+                resultado.dados[j][i] = dados[i][j];
             }
         }
-        return result;
+        return resultado;
     }
 
-    // Permite soma escalar + matriz
+    // Operadores amigos para escalar + matriz e escalar * matriz
     template <typename U>
-    friend Matrix<U> operator+(const U& scalar, const Matrix<U>& m);
+    friend Matriz<U> operator+(const U& escalar, const Matriz<U>& m);
 
-    // Permite multiplicação escalar * matriz
     template <typename U>
-    friend Matrix<U> operator*(const U& scalar, const Matrix<U>& m);
+    friend Matriz<U> operator*(const U& escalar, const Matriz<U>& m);
 
-    // Impressão formatada da matriz
+    // Impressão da matriz
     template <typename U>
-    friend std::ostream& operator<<(std::ostream& os, const Matrix<U>& m);
+    friend std::ostream& operator<<(std::ostream& os, const Matriz<U>& m);
 };
 
+// Implementações dos operadores amigos
 
 template <typename U>
-Matrix<U> operator+(const U& scalar, const Matrix<U>& m) {
-    return m + scalar; 
+Matriz<U> operator+(const U& escalar, const Matriz<U>& m) {
+    return m + escalar;
 }
 
 template <typename U>
-Matrix<U> operator*(const U& scalar, const Matrix<U>& m) {
-    return m * scalar; 
+Matriz<U> operator*(const U& escalar, const Matriz<U>& m) {
+    return m * escalar;
 }
 
 template <typename U>
-std::ostream& operator<<(std::ostream& os, const Matrix<U>& m) {
-    for (size_t i = 0; i < m.rows; ++i) {
-        for (size_t j = 0; j < m.cols; ++j) {
-            os << m.data[i][j] << "\t";
+std::ostream& operator<<(std::ostream& os, const Matriz<U>& m) {
+    for (size_t i = 0; i < m.linhas; ++i) {
+        for (size_t j = 0; j < m.colunas; ++j) {
+            os << m.dados[i][j] << "\t";
         }
         os << std::endl;
     }
