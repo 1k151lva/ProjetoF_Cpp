@@ -1,4 +1,4 @@
-#include "matriz.h" // Inclua o seu arquivo de cabeçalho
+#include "matriz.hpp" // Inclua o seu arquivo de cabeçalho
 #include <iostream>
 
 int main() {
