@@ -102,22 +102,6 @@ public:
         return result;
     }
 
-    Matrix<T> operator*(const Matrix<T>& other) const {
-        if (cols != other.rows) {
-            throw std::invalid_argument("Number of columns of first matrix must equal number of rows of second matrix for multiplication.");
-        }
-        Matrix<T> result(rows, other.cols);
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < other.cols; ++j) {
-                T sum = T(); // Inicializa com o valor padrão para T (e.g., 0 para numéricos)
-                for (size_t k = 0; k < cols; ++k) {
-                    sum += data[i][k] * other.data[k][j];
-                }
-                result.data[i][j] = sum;
-            }
-        }
-        return result;
-    }
 
     // Operadores compostos entre matrizes
     Matrix<T>& operator+=(const Matrix<T>& other) {
@@ -130,9 +114,6 @@ public:
         return *this;
     }
 
-    Matrix<T>& operator*=(const Matrix<T>& other) {
-        *this = *this * other; // Reutiliza o operador *
-        return *this;
     }
 
     // Operações com Escalares (Matrix op U)
