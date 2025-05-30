@@ -1,13 +1,13 @@
-#include "Matrix.h" // Inclua o seu arquivo de cabeçalho
+#include "Matrix.h" // Inclua o seu arquivo de cabeï¿½alho
 #include <iostream>
 
 int main() {
     
-    Matrix<int> A(2, 3, 5);
-    Matrix<int> B = { {1, 2, 3}, {4, 5, 6} };
-    Matrix<int> C = A + B;
-    Matrix<int> D = C * 2;
-    Matrix<int> E = 10 + D;
+    Matriz<int> A(2, 3, 5);
+    Matriz<int> B = { {1, 2, 3}, {4, 5, 6} };
+    Matriz<int> C = A + B;
+    Matriz<int> D = C * 2;
+    Matriz<int> E = 10 + D;
 
     std::cout << "Matriz E:\n" << A;
     std::cout << "Matriz E:\n" << B;
